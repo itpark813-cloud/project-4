@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberQuiz Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Анимированный интерактивный фон -->
+    <div class="neon-bg">
+        <div class="glow-sphere s1"></div>
+        <div class="glow-sphere s2"></div>
+    </div>
+
+    <div class="quiz-container">
+        
+        <!-- ================= ЭКРАН 1: НАСТРОЙКА ================= -->
+        <div id="start-screen" class="screen active">
+            <div class="quiz-header">
+                <span class="badge">ИНТЕРАКТИВ</span>
+                <h1>Cyber<span class="gradient-text">Quiz</span></h1>
+                <p>Проверь свою эрудицию в случайном интеллектуальном баттле</p>
+            </div>
+            
+            <div class="setup-box">
+                <label for="question-count">Сколько вопросов штурмуем?</label>
+                <div class="select-wrapper">
+                    <select id="question-count">
+                        <option value="5">Вызов: 5 вопросов (Быстрый)</option>
+                        <option value="10" selected>Вызов: 10 вопросов (Стандарт)</option>
+                        <option value="15">Вызов: 15 вопросов (Хардкор)</option>
+                    </select>
+                </div>
+                <button id="start-btn" class="action-btn">Запустить Систему</button>
+            </div>
+        </div>
+
+        <!-- ================= ЭКРАН 2: ИГРОВОЙ ПРОЦЕСС ================= -->
+        <div id="quiz-screen" class="screen">
+            <!-- Верхняя панель инфо -->
+            <div class="quiz-nav">
+                <span id="progress-text">Вопрос 1 из 10</span>
+                <div class="streak-badge" id="streak-counter" style="display: none;">
+                    🔥 Стрик: <span id="streak-val">0</span>
+                </div>
+            </div>
+            
+            <!-- Полоса прогресса -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <!-- Текст вопроса -->
+            <div class="question-block">
+                <h2 id="question-text">Здесь будет самый уникальный вопрос?</h2>
+            </div>
+
+            <!-- Сетка вариантов ответов -->
+            <div class="options-grid" id="options-container">
+                <!-- Кнопки генерируются динамически через JS -->
+            </div>
+
+            <!-- Текстовый фидбек -->
+            <div id="feedback-message" class="feedback-text"></div>
+        </div>
+
+        <!-- ================= ЭКРАН 3: ФИНАЛ И РЕЗУЛЬТАТЫ ================= -->
+        <div id="result-screen" class="screen">
+            <div class="result-header">
+                <div class="result-icon" id="result-emoji">🧠</div>
+                <h2>Тест Завершен!</h2>
+                <p id="result-rank" class="rank-text">Твой ранг: Мегамозг</p>
+            </div>
+
+            <!-- Статистика -->
+            <div class="stats-board">
+                <div class="stat-card">
+                    <span class="stat-num" id="stat-correct">0</span>
+                    <span class="stat-label">Правильно</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num" id="stat-percent">0%</span>
+                    <span class="stat-label">Точность</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num" id="stat-max-streak">0</span>
+                    <span class="stat-label">Макс. Стрик</span>
+                </div>
+            </div>
+
+            <button id="restart-btn" class="action-btn secondary">Пройти Снова 🔄</button>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
