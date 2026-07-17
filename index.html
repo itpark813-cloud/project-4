@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberQuiz Pro</title>
+    <title>CyberQuiz Foundation Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Анимированный интерактивный фон -->
     <div class="neon-bg">
         <div class="glow-sphere s1"></div>
         <div class="glow-sphere s2"></div>
@@ -16,81 +15,121 @@
 
     <div class="quiz-container">
         
-        <!-- ================= ЭКРАН 1: НАСТРОЙКА ================= -->
-        <div id="start-screen" class="screen active">
+        <!-- ГЛОБАЛЬНОЕ МЕНЮ ВКЛАДОК -->
+        <div class="tab-navigation">
+            <button id="tab-game" class="tab-btn active">🎮 Симулятор</button>
+            <button id="tab-analytics" class="tab-btn">📊 Анализ прогресса</button>
+        </div>
+
+        <!-- ================= ВКЛАДКА 1: ИГРОВОЙ МОДУЛЬ ================= -->
+        <div id="game-tab-content" class="tab-content active">
+            
+            <!-- ЭКРАН НАСТРОЙКИ -->
+            <div id="start-screen" class="screen active">
+                <div class="quiz-header">
+                    <span class="badge">FOUNDATION COURSE</span>
+                    <h1>Cyber<span class="gradient-text">Quiz</span></h1>
+                    <p>Проверка базы: от битов информации до синтаксиса С++</p>
+                </div>
+                
+                <div class="setup-box">
+                    <label for="question-count">Длина сессии тестирования:</label>
+                    <div class="select-wrapper">
+                        <select id="question-count">
+                            <option value="5">Фикс: 5 вопросов</option>
+                            <option value="10" selected>Стандарт: 10 вопросов</option>
+                            <option value="20">Максимум: 20 вопросов</option>
+                        </select>
+                    </div>
+                    <button id="start-btn" class="action-btn">Инициализировать Тест</button>
+                </div>
+            </div>
+
+            <!-- ИГРОВОЙ ПРОЦЕСС -->
+            <div id="quiz-screen" class="screen">
+                <div class="quiz-nav">
+                    <span id="progress-text">Вопрос 1 из 10</span>
+                    <div class="streak-badge" id="streak-counter" style="display: none;">
+                        🔥 Стрик: <span id="streak-val">0</span>
+                    </div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+
+                <div class="question-block">
+                    <h2 id="question-text">Загрузка структуры вопроса...</h2>
+                </div>
+
+                <div class="options-grid" id="options-container"></div>
+                <div id="feedback-message" class="feedback-text"></div>
+            </div>
+
+            <!-- ФИНАЛ СЕССИИ -->
+            <div id="result-screen" class="screen">
+                <div class="result-header">
+                    <div class="result-icon" id="result-emoji">🧠</div>
+                    <h2>Сессия завершена!</h2>
+                    <p id="result-rank" class="rank-text">Расчет ранга...</p>
+                </div>
+
+                <div class="stats-board">
+                    <div class="stat-card">
+                        <span class="stat-num" id="stat-correct">0</span>
+                        <span class="stat-label">Верно</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="stat-percent">0%</span>
+                        <span class="stat-label">Точность</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="stat-max-streak">0</span>
+                        <span class="stat-label">Пиковый Стрик</span>
+                    </div>
+                </div>
+
+                <button id="restart-btn" class="action-btn secondary">Начать новый цикл 🔄</button>
+            </div>
+        </div>
+
+        <!-- ================= ВКЛАДКА 2: МОДУЛЬ АНАЛИЗА СТАТИСТИКИ ================= -->
+        <div id="analytics-tab-content" class="tab-content">
             <div class="quiz-header">
-                <span class="badge">ИНТЕРАКТИВ</span>
-                <h1>Cyber<span class="gradient-text">Quiz</span></h1>
-                <p>Проверь свою эрудицию в случайном интеллектуальном баттле</p>
+                <span class="badge">ДИНАМИКА ОБУЧЕНИЯ</span>
+                <h2>Твой <span class="gradient-text">Прогресс</span></h2>
+                <p>Нейросетевой мониторинг изменения твоих знаний</p>
             </div>
-            
-            <div class="setup-box">
-                <label for="question-count">Сколько вопросов штурмуем?</label>
-                <div class="select-wrapper">
-                    <select id="question-count">
-                        <option value="5">Вызов: 5 вопросов (Быстрый)</option>
-                        <option value="10" selected>Вызов: 10 вопросов (Стандарт)</option>
-                        <option value="15">Вызов: 15 вопросов (Хардкор)</option>
-                    </select>
-                </div>
-                <button id="start-btn" class="action-btn">Запустить Систему</button>
-            </div>
-        </div>
 
-        <!-- ================= ЭКРАН 2: ИГРОВОЙ ПРОЦЕСС ================= -->
-        <div id="quiz-screen" class="screen">
-            <!-- Верхняя панель инфо -->
-            <div class="quiz-nav">
-                <span id="progress-text">Вопрос 1 из 10</span>
-                <div class="streak-badge" id="streak-counter" style="display: none;">
-                    🔥 Стрик: <span id="streak-val">0</span>
+            <!-- Виджет динамики (Лучше / Хуже) -->
+            <div class="trend-widget" id="trend-box">
+                <div class="trend-icon" id="trend-icon">📊</div>
+                <div class="trend-info">
+                    <h3 id="trend-title">Анализируем данные...</h3>
+                    <p id="trend-desc">Пройдите хотя бы 2 теста, чтобы увидеть график успеваемости.</p>
                 </div>
             </div>
-            
-            <!-- Полоса прогресса -->
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
 
-            <!-- Текст вопроса -->
-            <div class="question-block">
-                <h2 id="question-text">Здесь будет самый уникальный вопрос?</h2>
-            </div>
-
-            <!-- Сетка вариантов ответов -->
-            <div class="options-grid" id="options-container">
-                <!-- Кнопки генерируются динамически через JS -->
-            </div>
-
-            <!-- Текстовый фидбек -->
-            <div id="feedback-message" class="feedback-text"></div>
-        </div>
-
-        <!-- ================= ЭКРАН 3: ФИНАЛ И РЕЗУЛЬТАТЫ ================= -->
-        <div id="result-screen" class="screen">
-            <div class="result-header">
-                <div class="result-icon" id="result-emoji">🧠</div>
-                <h2>Тест Завершен!</h2>
-                <p id="result-rank" class="rank-text">Твой ранг: Мегамозг</p>
-            </div>
-
-            <!-- Статистика -->
+            <!-- Общая сводка -->
             <div class="stats-board">
                 <div class="stat-card">
-                    <span class="stat-num" id="stat-correct">0</span>
-                    <span class="stat-label">Правильно</span>
+                    <span class="stat-num" id="total-games">0</span>
+                    <span class="stat-label">Всего тестов</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-num" id="stat-percent">0%</span>
-                    <span class="stat-label">Точность</span>
+                    <span class="stat-num" id="global-avg">0%</span>
+                    <span class="stat-label">Ср. Точность</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-num" id="stat-max-streak">0</span>
-                    <span class="stat-label">Макс. Стрик</span>
+                    <span class="stat-num" id="record-streak">0</span>
+                    <span class="stat-label">Рекорд стрика</span>
                 </div>
             </div>
 
-            <button id="restart-btn" class="action-btn secondary">Пройти Снова 🔄</button>
+            <!-- Ссылка на сброс памяти -->
+            <div style="text-align: center;">
+                <button id="clear-stats-btn" class="clear-link-btn">🗑️ Сбросить историю логов</button>
+            </div>
         </div>
 
     </div>
