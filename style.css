@@ -1,0 +1,169 @@
+:root {
+    --bg-dark: #080b11;
+    --card-glass: rgba(13, 19, 33, 0.75);
+    --border-glass: rgba(255, 255, 255, 0.06);
+    --neon-cyan: #00f2ff;
+    --neon-purple: #9d4edd;
+    --neon-green: #2ecc71;
+    --neon-red: #ff4757;
+    --text-white: #ffffff;
+    --text-gray: #7e8b9b;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    padding: 20px;
+}
+
+/* Фрактальный неоновый фон */
+.neon-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+}
+.glow-sphere {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.3;
+    animation: pulseBg 12s infinite alternate ease-in-out;
+}
+.s1 { width: 400px; height: 400px; background: var(--neon-purple); top: -5%; left: 10%; }
+.s2 { width: 450px; height: 450px; background: var(--neon-cyan); bottom: -5%; right: 10%; animation-delay: -6s; }
+
+@keyframes pulseBg {
+    0% { transform: scale(1) translate(0, 0); }
+    100% { transform: scale(1.15) translate(30px, -30px); }
+}
+
+/* Стеклянный главный модуль */
+.quiz-container {
+    background: var(--card-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-glass);
+    border-radius: 28px;
+    padding: 35px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+    z-index: 10;
+}
+
+/* Управление экранами */
+.screen {
+    display: none;
+    opacity: 0;
+    transform: scale(0.96);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.screen.active {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Стили заголовков */
+.quiz-header { text-align: center; margin-bottom: 30px; }
+.badge {
+    background: rgba(0, 242, 255, 0.1);
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+h1 { font-size: 36px; font-weight: 800; margin-top: 15px; margin-bottom: 8px; }
+.gradient-text {
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+p { color: var(--text-gray); font-size: 15px; line-height: 1.5; }
+
+/* Кастомный выбор вопросов */
+.setup-box { margin-top: 25px; }
+label { font-size: 13px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 10px; }
+.select-wrapper {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-glass);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 25px;
+}
+select {
+    background: none; border: none; outline: none; color: white; width: 100%; font-size: 16px; cursor: pointer;
+}
+select option { background: #0f1524; color: white; }
+
+/* Кнопки действий */
+.action-btn {
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+    border: none; border-radius: 14px; padding: 16px; color: white; font-size: 16px; font-weight: 700; width: 100%; cursor: pointer; transition: 0.3s;
+}
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+}
+.action-btn.secondary {
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border-glass);
+}
+.action-btn.secondary:hover { background: rgba(255,255,255,0.12); box-shadow: none; }
+
+/* Игровой интерфейс */
+.quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 14px; color: var(--text-gray); }
+.streak-badge { background: #ff9f43; color: black; font-weight: 800; padding: 3px 10px; border-radius: 12px; animation: bounce 0.4s ease; }
+@keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+.progress-bar { background: rgba(255,255,255,0.06); height: 6px; border-radius: 10px; overflow: hidden; margin-bottom: 30px; }
+.progress-fill { height: 100%; width: 0%; background: var(--neon-cyan); transition: width 0.4s ease; }
+
+.question-block { margin-bottom: 25px; min-height: 70px; }
+.question-block h2 { font-size: 22px; font-weight: 600; line-height: 1.4; }
+
+/* Сетка вариантов ответа */
+.options-grid { display: flex; flex-direction: column; gap: 12px; }
+.option-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px; padding: 16px 20px; text-align: left; color: white; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.25s ease; outline: none;
+}
+.option-btn:hover:not([disabled]) {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--neon-cyan);
+    transform: translateX(4px);
+}
+
+/* Статусы ответов */
+.option-btn.correct { background: rgba(46, 204, 113, 0.15) !important; border-color: var(--neon-green) !important; color: var(--neon-green); font-weight: 700; }
+.option-btn.wrong { background: rgba(255, 71, 87, 0.15) !important; border-color: var(--neon-red) !important; color: var(--neon-red); }
+
+.feedback-text { text-align: center; font-weight: bold; height: 20px; margin-top: 20px; font-size: 14px; transition: 0.2s; }
+
+/* Экран финальных результатов */
+.result-header { text-align: center; margin-bottom: 30px; }
+.result-emoji { font-size: 60px; margin-bottom: 10px; }
+.rank-text { color: var(--neon-cyan); font-weight: 700; font-size: 18px; margin-top: 5px; }
+.stats-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 35px; }
+.stat-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 16px; padding: 15px 5px; text-align: center; }
+.stat-num { display: block; font-size: 24px; font-weight: 700; color: white; margin-bottom: 4px; }
+.stat-label { font-size: 11px; color: var(--text-gray); text-transform: uppercase; font-weight: 600; }
