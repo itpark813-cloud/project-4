@@ -1,4 +1,4 @@
-// Новая база знаний: Темы курса Foundation (C++, биты, байты, структуры)
+// База знаний курса Foundation (C++, единицы информации, логика, память)
 const QUESTION_POOL = [
     { q: "Сколько бит информации содержится в одном стандартном байте?", a: ["4 бита", "8 бит", "16 бит", "1024 бита"], correct: 1 },
     { q: "Сколько мегабайт (МБ) содержится в 1 гигабайте (ГБ) по канонам двоичной системы?", a: ["1000 МБ", "1024 МБ", "512 МБ", "2048 МБ"], correct: 1 },
@@ -32,14 +32,14 @@ let currentStreak = 0;
 let maxStreak = 0;
 let totalQuestionsRequested = 10;
 
-// Инициализация при загрузке страницы
+// Инициализация скриптов при полной загрузке DOM дерева
 document.addEventListener("DOMContentLoaded", () => {
     initTabs();
     initGameLogic();
     calculateAnalytics();
 });
 
-// МОДУЛЬ ВКЛАДОК (МЕНЮ)
+// МОДУЛЬ УПРАВЛЕНИЯ ВКЛАДКАМИ (МЕНЮ)
 function initTabs() {
     const tabGame = document.getElementById("tab-game");
     const tabAnalytics = document.getElementById("tab-analytics");
@@ -58,11 +58,11 @@ function initTabs() {
         tabGame.classList.remove("active");
         contentAnalytics.classList.add("active");
         contentGame.classList.remove("active");
-        calculateAnalytics(); // Пересчитываем статистику при открытии
+        calculateAnalytics(); // Обновление расчетов при переходе на экран аналитики
     });
 }
 
-// Утилита: Полный случайный перемешиватель (Алгоритм Fisher-Yates)
+// Случайный перемешиватель массивов (Алгоритм Тасования Фишера-Йетса)
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -71,7 +71,7 @@ function shuffleArray(array) {
     return array;
 }
 
-// МОДУЛЬ ИГРЫ
+// МОДУЛЬ ИГРОВОЙ ЛОГИКИ
 function initGameLogic() {
     const startScreen = document.getElementById("start-screen");
     const quizScreen = document.getElementById("quiz-screen");
@@ -80,6 +80,7 @@ function initGameLogic() {
     document.getElementById("start-btn").addEventListener("click", () => {
         totalQuestionsRequested = parseInt(document.getElementById("question-count").value);
         
+        // Перемешиваем и отрезаем нужное количество вопросов
         let shuffledPool = shuffleArray([...QUESTION_POOL]);
         gameQuestions = shuffledPool.slice(0, totalQuestionsRequested);
         
@@ -100,13 +101,14 @@ function initGameLogic() {
     });
 
     document.getElementById("clear-stats-btn").addEventListener("click", () => {
-        if(confirm("Вы уверены, что хотите стереть историю ваших тестов?")) {
+        if (confirm("Вы уверены, что хотите полностью стереть историю ваших тестов? Это действие необратимо.")) {
             localStorage.removeItem("quiz_history");
             calculateAnalytics();
         }
     });
 }
 
+// Вывод структуры вопроса и ответов на экран
 function renderQuestion() {
     const qData = gameQuestions[currentIdx];
     
@@ -116,6 +118,7 @@ function renderQuestion() {
     
     document.getElementById("question-text").innerText = qData.q;
     
+    // Перемешиваем варианты ответов, сохраняя ссылку на правильный текст
     const originalAnswerText = qData.a[qData.correct];
     let choices = shuffleArray([...qData.a]); 
     
@@ -132,7 +135,9 @@ function renderQuestion() {
     });
 }
 
+// Обработка клика по варианту ответа
 function handleAnswer(selectedBtn, isCorrect, container) {
+    // Блокируем остальные кнопки, чтобы нельзя было кликать дважды
     Array.from(container.children).forEach(btn => btn.disabled = true);
     
     const feedback = document.getElementById("feedback-message");
@@ -160,6 +165,7 @@ function handleAnswer(selectedBtn, isCorrect, container) {
         feedback.innerText = WRONG_REACTIONS[Math.floor(Math.random() * WRONG_REACTIONS.length)];
         feedback.style.color = "var(--neon-red)";
         
+        // Подсвечиваем правильный ответ, чтобы пользователь учился на ошибках
         const qData = gameQuestions[currentIdx];
         const correctText = qData.a[qData.correct];
         Array.from(container.children).forEach(btn => {
@@ -167,6 +173,7 @@ function handleAnswer(selectedBtn, isCorrect, container) {
         });
     }
 
+    // Небольшая задержка перед переходом к следующему вопросу
     setTimeout(() => {
         currentIdx++;
         if (currentIdx < totalQuestionsRequested) {
@@ -177,7 +184,7 @@ function handleAnswer(selectedBtn, isCorrect, container) {
     }, 1500);
 }
 
-// Завершение сессии и сохранение результатов в ЛОКАЛЬНУЮ БД
+// Подсчет итогов сессии и запись логов в localStorage
 function finishQuizSession() {
     const quizScreen = document.getElementById("quiz-screen");
     const resultScreen = document.getElementById("result-screen");
@@ -191,7 +198,7 @@ function finishQuizSession() {
     document.getElementById("stat-percent").innerText = `${accuracy}%`;
     document.getElementById("stat-max-streak").innerText = maxStreak;
     
-    // Рассчитываем ранги
+    // Определение ранга студента
     const rankEl = document.getElementById("result-rank");
     const emojiEl = document.getElementById("result-emoji");
     if (accuracy === 100) { rankEl.innerText = "Ранг: Старший Архитектор 👑"; emojiEl.innerText = "👑"; }
@@ -199,7 +206,7 @@ function finishQuizSession() {
     else if (accuracy >= 40) { rankEl.innerText = "Ранг: Джуниор на стажировке 💻"; emojiEl.innerText = "💻"; }
     else { rankEl.innerText = "Ранг: Студент на пересдаче 📚"; emojiEl.innerText = "📚"; }
 
-    // СОХРАНЕНИЕ В LOCALSTORAGE
+    // СОХРАНЕНИЕ МЕТРИКИ В ЛОКАЛЬНУЮ БД БРАУЗЕРА
     let history = JSON.parse(localStorage.getItem("quiz_history")) || [];
     history.push({
         accuracy: accuracy,
@@ -209,7 +216,7 @@ function finishQuizSession() {
     localStorage.setItem("quiz_history", JSON.stringify(history));
 }
 
-// МОДУЛЬ МАТЕМАТИЧЕСКОГО АНАЛИЗА И ТРЕНДОВ
+// МАТЕМАТИЧЕСКИЙ АНАЛИЗАТОР И ВЫЧИСЛЕНИЕ ТРЕНДОВ ОБУЧЕНИЯ
 function calculateAnalytics() {
     let history = JSON.parse(localStorage.getItem("quiz_history")) || [];
     
@@ -221,7 +228,7 @@ function calculateAnalytics() {
     const trendDesc = document.getElementById("trend-desc");
     const trendIcon = document.getElementById("trend-icon");
 
-    // Обнуляем стили тренда перед вычислениями
+    // Сброс классов перед расчетом
     trendBox.className = "trend-widget";
 
     if (history.length === 0) {
@@ -229,12 +236,12 @@ function calculateAnalytics() {
         globalAvgEl.innerText = "0%";
         recordStreakEl.innerText = "0";
         trendTitle.innerText = "Логи пусты";
-        trendDesc.innerText = "Пройдите тестирование во вкладке 'Симулятор', чтобы ИИ собрал метрики.";
+        trendDesc.innerText = "Пройдите тестирование во вкладке 'Симулятор', чтобы система собрала метрики.";
         trendIcon.innerText = "📊";
         return;
     }
 
-    // Расчет базовых показателей
+    // Вычисление базовых статистических показателей
     const totalGames = history.length;
     const totalAccuracySum = history.reduce((sum, session) => sum + session.accuracy, 0);
     const globalAvg = Math.round(totalAccuracySum / totalGames);
@@ -244,38 +251,38 @@ function calculateAnalytics() {
     globalAvgEl.innerText = `${globalAvg}%`;
     recordStreakEl.innerText = highestStreak;
 
-    // СИСТЕМА ИНТЕЛЛЕКТУАЛЬНОГО АНАЛИЗА ТРЕНДА (ЛУЧШЕ ИЛИ ХУЖЕ)
+    // СИСТЕМА СРАВНИТЕЛЬНОГО АНАЛИЗА ДИНАМИКИ УСПЕВАЕМОСТИ (ЛУЧШЕ / ХУЖЕ)
     if (totalGames < 2) {
         trendTitle.innerText = "Сбор информации";
-        trendDesc.innerText = "Статистика формируется. Запустите хотя бы еще одну сессию для оценки динамики.";
+        trendDesc.innerText = "Аналитика формируется. Запустите хотя бы еще одну сессию для оценки динамики ответов.";
         trendIcon.innerText = "⏳";
         return;
     }
 
-    // Сравниваем среднюю точность последнего теста с общим средним значением до него
+    // Сравниваем точность самой последней сессии со средним значением всех предыдущих сессий
     const lastSession = history[history.length - 1];
     const previousSessions = history.slice(0, -1);
     const prevAvg = Math.round(previousSessions.reduce((sum, s) => sum + s.accuracy, 0) / previousSessions.length);
 
-    const difference = lastSession.accuracy - prevAvg;
+    const delta = lastSession.accuracy - prevAvg;
 
-    if (difference > 5) {
-        // Ответы становятся явно ЛУЧШЕ
+    if (delta > 5) {
+        // Прогресс идет вверх
         trendBox.classList.add("trend-upgrade");
         trendTitle.innerText = "Ты улучшаешься! 📈";
-        trendDesc.innerText = `Твой последний результат (${lastSession.accuracy}%) выше предыдущего среднего уровня (${prevAvg}%). Скорость усвоения Foundation растет!`;
+        trendDesc.innerText = `Твой последний результат (${lastSession.accuracy}%) заметно выше предыдущей нормы (${prevAvg}%). Знания по курсу Foundation закрепляются лучше!`;
         trendIcon.innerText = "🚀";
-    } else if (difference < -5) {
-        // Ответы становятся ХУЖЕ
+    } else if (delta < -5) {
+        // Прогресс падает вниз
         trendBox.classList.add("trend-downgrade");
         trendTitle.innerText = "Показатели падают... 📉";
-        trendDesc.innerText = `Последний результат (${lastSession.accuracy}%) просел ниже твоей нормы (${prevAvg}%). Повтори мегабайты и синтаксис циклов.`;
+        trendDesc.innerText = `Последний тест (${lastSession.accuracy}%) пройден хуже твоих стандартных результатов (${prevAvg}%). Стоит повторить биты, байты и синтаксис C++.`;
         trendIcon.innerText = "⚠️";
     } else {
-        // Стабильный результат
+        // Стабильный результат без резких отклонений
         trendBox.classList.add("trend-stable");
-        trendTitle.innerText = "Стабильный уровень 📊";
-        trendDesc.innerText = `Ты держишь планку на уровне устойчивых ${globalAvg}%. Отличная стабильность знаний кода!`;
+        trendTitle.innerText = "Стабильный уровень 🎯";
+        trendDesc.innerText = `Ты держишь стабильную планку знаний. Твоя точность зафиксировалась на отметке порядка ${globalAvg}%.`;
         trendIcon.innerText = "🎯";
     }
 }
