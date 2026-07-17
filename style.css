@@ -1,27 +1,107 @@
-/* Вставь это в начало или конец твоего текущего style.css */
+/* Глобальные настройки темы и переменные */
+:root {
+    --bg-dark: #07080e;
+    --card-bg: rgba(13, 16, 27, 0.75);
+    --border-glass: rgba(255, 255, 255, 0.07);
+    --text-white: #ffffff;
+    --text-gray: #8e95a5;
+    
+    /* Неоновые маркеры */
+    --neon-cyan: #00f2ff;
+    --neon-purple: #9d4edf;
+    --neon-green: #2ecc71;
+    --neon-red: #ff4757;
+    --neon-glow: drop-shadow(0 0 12px rgba(0, 242, 255, 0.4));
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+/* Стеклянный интерактивный задний фон */
+.neon-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.glow-sphere {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(140px);
+    opacity: 0.4;
+}
+
+.s1 {
+    width: 450px;
+    height: 450px;
+    background: var(--neon-cyan);
+    top: -10%;
+    left: -10%;
+}
+
+.s2 {
+    width: 500px;
+    height: 500px;
+    background: var(--neon-purple);
+    bottom: -15%;
+    right: -10%;
+}
+
+/* Главный контейнер интерфейса */
+.quiz-container {
+    background: var(--card-bg);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid var(--border-glass);
+    border-radius: 32px;
+    width: 100%;
+    max-width: 620px;
+    padding: 35px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
 
 /* Система навигации по вкладкам */
 .tab-navigation {
     display: flex;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-glass);
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 6px;
     margin-bottom: 30px;
-    gap: 5px;
+    gap: 6px;
 }
 
 .tab-btn {
     flex: 1;
     background: none;
     border: none;
-    padding: 12px 10px;
+    padding: 14px 10px;
     color: var(--text-gray);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    border-radius: 12px;
-    transition: all 0.3s ease;
+    border-radius: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tab-btn:hover {
@@ -30,12 +110,13 @@
 }
 
 .tab-btn.active {
-    background: linear-gradient(90deg, rgba(0, 242, 255, 0.15), rgba(157, 78, 221, 0.15));
-    border: 1px solid rgba(0, 242, 255, 0.2);
+    background: linear-gradient(90deg, rgba(0, 242, 255, 0.12), rgba(157, 78, 221, 0.12));
+    border: 1px solid rgba(0, 242, 255, 0.25);
     color: var(--neon-cyan);
+    text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
 }
 
-/* Контент вкладок */
+/* Управление показом контента вкладок */
 .tab-content {
     display: none;
 }
@@ -44,28 +125,329 @@
     display: block;
 }
 
-/* Виджет тренда успеваемости */
+/* Экраны приложения */
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Хедеры и Тексты */
+.quiz-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(0, 242, 255, 0.08);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    color: var(--neon-cyan);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+}
+
+h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+p {
+    color: var(--text-gray);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* Компоненты настроек игры */
+.setup-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-glass);
+    border-radius: 20px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.setup-box label {
+    display: block;
+    font-size: 14px;
+    color: var(--text-gray);
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.select-wrapper {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+select {
+    width: 100%;
+    background: rgba(10, 11, 18, 0.6);
+    border: 1px solid var(--border-glass);
+    border-radius: 14px;
+    padding: 15px;
+    color: var(--text-white);
+    font-size: 15px;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    transition: 0.3s;
+}
+
+select:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+}
+
+/* Навигация и Стрики во время квиза */
+.quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-gray);
+}
+
+.streak-badge {
+    background: rgba(255, 71, 87, 0.1);
+    border: 1px solid rgba(255, 71, 87, 0.3);
+    color: var(--neon-red);
+    padding: 4px 12px;
+    border-radius: 12px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+}
+
+/* Кастомный Прогресс-бар */
+.progress-bar {
+    background: rgba(255, 255, 255, 0.04);
+    height: 8px;
+    border-radius: 10px;
+    width: 100%;
+    margin-bottom: 35px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+    border-radius: 10px;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Блок Вопроса */
+.question-block {
+    margin-bottom: 30px;
+}
+
+.question-block h2 {
+    font-size: 22px;
+    line-height: 1.4;
+    font-weight: 600;
+}
+
+/* Сетка вариантов ответов */
+.options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.option-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px;
+    padding: 18px 22px;
+    color: var(--text-white);
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    outline: none;
+}
+
+.option-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(0, 242, 255, 0.4);
+    transform: translateX(4px);
+}
+
+.option-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Стили для ответов (Правильно / Неправильно) */
+.option-btn.correct {
+    background: rgba(46, 204, 113, 0.15) !important;
+    border-color: var(--neon-green) !important;
+    color: var(--neon-green) !important;
+    font-weight: 600;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.2);
+}
+
+.option-btn.wrong {
+    background: rgba(255, 71, 87, 0.15) !important;
+    border-color: var(--neon-red) !important;
+    color: var(--neon-red) !important;
+    font-weight: 600;
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.2);
+}
+
+.feedback-text {
+    text-align: center;
+    height: 20px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+}
+
+/* Главные кнопки действий */
+.action-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+    border: none;
+    border-radius: 16px;
+    padding: 16px 20px;
+    color: var(--text-white);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 242, 255, 0.25);
+}
+
+.action-btn:hover {
+    opacity: 0.95;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 242, 255, 0.4);
+}
+
+.action-btn.secondary {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-glass);
+    box-shadow: none;
+}
+
+.action-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+}
+
+/* Экран Финала Сессии */
+.result-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.result-icon {
+    font-size: 64px;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
+}
+
+.rank-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    margin-top: 5px;
+}
+
+/* Сетки для статистики и карточек */
+.stats-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 35px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-glass);
+    border-radius: 20px;
+    padding: 20px 10px;
+    text-align: center;
+}
+
+.stat-num {
+    display: block;
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 5px;
+    color: var(--text-white);
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-gray);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ================= МОДУЛЬ АНАЛИТИКИ (ТРЕНДЫ) ================= */
 .trend-widget {
     display: flex;
     align-items: center;
     gap: 18px;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--border-glass);
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 25px;
+    border-radius: 22px;
+    padding: 22px;
+    margin-bottom: 30px;
     transition: all 0.4s ease;
 }
 
 .trend-icon {
-    font-size: 38px;
-    width: 60px;
-    height: 60px;
-    background: rgba(255, 255, 255, 0.04);
+    font-size: 34px;
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.03);
     border-radius: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .trend-info h3 {
@@ -75,40 +457,52 @@
 }
 
 .trend-info p {
-    font-size: 13px;
+    font-size: 13.5px;
+    line-height: 1.4;
 }
 
-/* Цветовые схемы для состояний прогресса */
+/* Классы динамических состояний (Добавляются через JS) */
 .trend-upgrade {
-    border-color: rgba(46, 204, 113, 0.3);
-    background: linear-gradient(135deg, rgba(46, 204, 113, 0.05), transparent);
+    border-color: rgba(46, 204, 113, 0.25);
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.04), transparent);
 }
 .trend-upgrade h3 { color: var(--neon-green); }
 
 .trend-downgrade {
-    border-color: rgba(255, 71, 87, 0.3);
-    background: linear-gradient(135deg, rgba(255, 71, 87, 0.05), transparent);
+    border-color: rgba(255, 71, 87, 0.25);
+    background: linear-gradient(135deg, rgba(255, 71, 87, 0.04), transparent);
 }
 .trend-downgrade h3 { color: var(--neon-red); }
 
 .trend-stable {
-    border-color: rgba(0, 242, 255, 0.3);
-    background: linear-gradient(135deg, rgba(0, 242, 255, 0.05), transparent);
+    border-color: rgba(0, 242, 255, 0.25);
+    background: linear-gradient(135deg, rgba(0, 242, 255, 0.04), transparent);
 }
 .trend-stable h3 { color: var(--neon-cyan); }
 
-/* Кнопка сброса логов */
+/* Кнопка стирания базы данных */
 .clear-link-btn {
     background: none;
     border: none;
-    color: #ff4757;
-    opacity: 0.6;
+    color: var(--neon-red);
+    opacity: 0.5;
     font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 5px;
     transition: 0.2s;
+    outline: none;
 }
 .clear-link-btn:hover {
-    opacity: 1;
+    opacity: 0.9;
     text-decoration: underline;
+}
+
+/* Мобильная адаптивность */
+@media (max-width: 480px) {
+    .quiz-container { padding: 22px; border-radius: 24px; }
+    h1 { font-size: 32px; }
+    .stats-board { grid-template-columns: 1fr; gap: 10px; }
+    .trend-widget { flex-direction: column; text-align: center; padding: 20px; }
+    .option-btn { padding: 15px 18px; font-size: 15px; }
 }
